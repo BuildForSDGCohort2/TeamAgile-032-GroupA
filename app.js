@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const app = express();
 
 let registerRoute = require("./routes/register");
+let loginRoute = require("./routes/login");
 
 mongoose
   .connect(process.env.DB_URI, {
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "assets")));
 
 app.use(registerRoute);
+app.use(loginRoute);
 // app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
