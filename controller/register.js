@@ -25,10 +25,13 @@ exports.registerUser = async (req, res, next) => {
         phone_number: phone,
         role
       },
-      process.env.JWT_KEY
+      process.env.JWT_KEY,
+      {
+        expiresIn: "24h"
+      }
     );
 
-    user = await new User({
+    user = new User({
       phone: phone,
       password: hashpassword,
       api_token: api_token
