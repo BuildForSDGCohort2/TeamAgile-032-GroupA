@@ -2,15 +2,22 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema(
   {
-    url: {
-      type: String
+    title: {
+      type: String,
+      required: true
     },
+    media_url: [],
     text: {
       type: String
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
+      required: true
+    },
+    date: {
+      type: Date,
+      default: Date.now(),
       required: true
     }
   },
