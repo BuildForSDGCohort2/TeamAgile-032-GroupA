@@ -1,4 +1,7 @@
 # TeamAgile-032-GroupA
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7308829a75b4427780bbbefe308ab400)](https://app.codacy.com/gh/BuildForSDGCohort2/TeamAgile-032-GroupA?utm_source=github.com&utm_medium=referral&utm_content=BuildForSDGCohort2/TeamAgile-032-GroupA&utm_campaign=Badge_Grade_Settings)
+
 A repository for both backend and Frontend project with their unique branchs seperate from the master branch. \n after the project has been completed, then both projectes will be merged with the Master Branch
 
 Year after year, there are alarming reports of families losing members to the indecent trades of humans by humans. where humans are indiscriminately trafficked to far distant farms and locations against their own will. 
