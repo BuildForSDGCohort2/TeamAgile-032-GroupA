@@ -2,15 +2,18 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 require("dotenv").config();
+const expressip = require("express-ip");
+const app = express();
+
+let port = process.env.PORT || 3000;
 
 const mongoose = require("mongoose");
-
-const app = express();
 
 let registerRoute = require("./routes/register");
 let loginRoute = require("./routes/login");
 let otpRoute = require("./routes/otp");
 let postsRoute = require("./routes/post");
+let crimeRoute = require("./routes/crime");
 
 mongoose
   .connect(process.env.DB_URI, {
@@ -23,12 +26,11 @@ mongoose
   })
   .catch(err => console.log(err));
 
-// view engine setup
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "ejs");
+app.enable("trust proxy");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(expressip().getIpInfoMiddleware);
 
 app.use(express.static(path.join(__dirname, "assets")));
 
@@ -36,7 +38,7 @@ app.use(registerRoute);
 app.use(loginRoute);
 app.use(otpRoute);
 app.use(postsRoute);
-// app.use("/users", usersRouter);
+app.use(crimeRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -53,6 +55,6 @@ app.use(function (err, req, res, next) {
   console.log(err);
 });
 
-app.listen(3000, () => {
-  console.log(`App listening on port 3000`);
+app.listen(port, () => {
+  console.log(`App listening on port port`);
 });
