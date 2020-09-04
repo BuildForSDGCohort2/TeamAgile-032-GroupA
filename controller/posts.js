@@ -53,7 +53,7 @@ exports.upload = async (req, res, next) => {
 
     let post_result = await postSchema.create(post);
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       message: "Post created successfully.",
       data: {
