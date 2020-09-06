@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken"),
   { signToken } = require("../auth/auth");
 
 exports.registerUser = async (req, res, next) => {
-  let { phone, password, role = "user" } = req.body;
+  let { phone, password, role } = req.body;
   try {
     let user = await User.findOne({ phone: phone });
     if (user) {
@@ -19,11 +19,11 @@ exports.registerUser = async (req, res, next) => {
       });
     }
     let hashpassword = await bcryptjs.hash(password, 12);
-
+    let user_role = role || "user";
     let api_token = jwt.sign(
       {
         phone_number: phone,
-        role
+        role: user_role
       },
       process.env.JWT_KEY,
       {
@@ -34,7 +34,8 @@ exports.registerUser = async (req, res, next) => {
     user = new User({
       phone: phone,
       password: hashpassword,
-      api_token: api_token
+      api_token: api_token,
+      role: user_role
     });
     user = await user.save();
 

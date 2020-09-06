@@ -8,6 +8,9 @@ let { cloudConfig } = require("../controller/cloudinary");
 
 let router = express.Router();
 
+router.get("/posts", auth.verify, postController.getAll);
+router.get("/posts/all", auth.verify, postController.getAllAdmin);
+
 router.post(
   "/posts/upload",
   uploads,
