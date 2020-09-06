@@ -4,6 +4,7 @@ const DataUri = require("datauri/parser");
 const path = require("path");
 const cloudinary = require("cloudinary");
 
+//post upload controller
 exports.upload = async (req, res, next) => {
   let postTitle = req.body.title;
   let postText = req.body.text || null;
@@ -59,6 +60,112 @@ exports.upload = async (req, res, next) => {
       data: {
         statusCode: 200,
         post: post_result
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+      error: {
+        statusCode: 500,
+        description: err.message
+      }
+    });
+  }
+};
+
+//post view controller
+exports.getAll = async (req, res, next) => {
+  try {
+    let { phone_number, role } = req.user;
+    let user = await userSchema.findOne({ phone: phone_number });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+        error: {
+          statusCode: 404,
+          description: "User not found"
+        }
+      });
+    }
+
+    if (user.role == "user") {
+      let posts = await postSchema
+        .find()
+        .select("-author")
+        .sort({ date: -1 })
+        .exec();
+      return res.status(201).json({
+        success: true,
+        message: "Success",
+        data: {
+          statusCode: 200,
+          posts: posts
+        }
+      });
+    }
+
+    if (user.role == "super_admin") {
+      let posts = await postSchema
+        .find()
+        .populate("author", "-password")
+        .exec();
+      return res.status(201).json({
+        success: true,
+        message: "Success",
+        data: {
+          length: posts.length,
+          statusCode: 200,
+          posts: posts
+        }
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+      error: {
+        statusCode: 500,
+        description: err.message
+      }
+    });
+  }
+};
+
+exports.getAllAdmin = async (req, res, next) => {
+  try {
+    let { phone_number } = req.user;
+    let user = await userSchema.findOne({ phone: phone_number });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+        error: {
+          statusCode: 404,
+          description: "User not found"
+        }
+      });
+    }
+    if (user.role !== "super_admin") {
+      return res.status(401).json({
+        success: false,
+        message: "You are not authorised to access this resource",
+        error: {
+          statusCode: 401,
+          description: "You are not authorised to access this resource"
+        }
+      });
+    }
+
+    let posts = await postSchema.find().populate("author");
+    return res.status(201).json({
+      success: true,
+      message: "Success",
+      data: {
+        length: posts.length,
+        statusCode: 200,
+        posts: posts
       }
     });
   } catch (err) {

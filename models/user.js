@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["super_admin", "admin", "user"],
+      enum: ["super_admin", "user"],
       default: "user"
     },
     api_token: {
