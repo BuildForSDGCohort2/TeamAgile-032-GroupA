@@ -11,7 +11,7 @@ let route = express.Router();
 
 route.get("/", (req, res) => {
   console.log(req.ipInfo);
-  res.send("Works");
+  res.redirect("https://documenter.getpostman.com/view/12631060/TVCiTmRJ");
 });
 
 route.post(
