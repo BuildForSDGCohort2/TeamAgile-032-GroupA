@@ -164,7 +164,7 @@ exports.getAllAdmin = async (req, res, next) => {
       message: "Success",
       data: {
         length: posts.length,
-        statusCode: 200,
+        statusCode: 201,
         posts: posts
       }
     });

@@ -1,7 +1,11 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
-require("dotenv").config();
+
 const expressip = require("express-ip");
 const app = express();
 
@@ -14,6 +18,7 @@ let loginRoute = require("./routes/login");
 let otpRoute = require("./routes/otp");
 let postsRoute = require("./routes/post");
 let crimeRoute = require("./routes/crime");
+let userRoute = require("./routes/users");
 
 mongoose
   .connect(process.env.DB_URI, {
@@ -39,6 +44,7 @@ app.use(loginRoute);
 app.use(otpRoute);
 app.use(postsRoute);
 app.use(crimeRoute);
+app.use(userRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
