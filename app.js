@@ -1,7 +1,11 @@
+if (process.env.NODE_ENV == "development") {
+  require("dotenv").config();
+}
+
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
-require("dotenv").config();
+
 const expressip = require("express-ip");
 const app = express();
 
