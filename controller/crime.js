@@ -46,7 +46,7 @@ exports.report = async (req, res, next) => {
       address: address
     };
 
-    if (!req.files) {
+    if (!req.files || req.files.length <= 0) {
       return res.status(404).json({
         success: false,
         message: "Provide evidence of crime",
@@ -72,17 +72,64 @@ exports.report = async (req, res, next) => {
       });
     }
 
-    let crimeResult = await crimeSchema.create(crime);
+    await crimeSchema.create(crime);
 
     return res.status(201).json({
       success: true,
-      message: "Post created successfully.",
+      message: "Crime reported successfully.",
       data: {
         statusCode: 200
       }
     });
   } catch (err) {
-    console.log(err);
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+      error: {
+        statusCode: 500,
+        description: err
+      }
+    });
+  }
+};
+
+exports.getAll = async (req, res, next) => {
+  try {
+    let { phone_number, role } = req.user;
+    let user = await userSchema.findOne({ phone: phone_number });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+        error: {
+          statusCode: 404,
+          description: "User not found"
+        }
+      });
+    }
+
+    if (role !== "super_admin") {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorised Access",
+        error: {
+          statusCode: 401,
+          description: "Unauthorised Access"
+        }
+      });
+    }
+
+    let crimes = await crimeSchema.find().populate("reporter", "phone").exec();
+
+    return res.status(200).json({
+      success: true,
+      message: "success",
+      data: {
+        statusCode: 200,
+        data: crimes
+      }
+    });
+  } catch (err) {
     return res.status(500).json({
       success: false,
       message: err.message,
