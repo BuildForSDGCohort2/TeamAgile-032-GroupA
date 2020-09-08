@@ -22,4 +22,6 @@ route.post(
   crimeControler.report
 );
 
+route.get("/crime/all", auth.verify, crimeControler.getAll);
+
 module.exports = route;

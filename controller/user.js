@@ -100,3 +100,54 @@ exports.deleteUser = async (req, res, next) => {
     });
   }
 };
+
+exports.getOneUserAdmin = async (req, res, next) => {
+  let userID = req.params.id;
+  let { phone_number, role } = req.user;
+
+  try {
+    let admin = await UserSchema.findOne({ phone: phone_number });
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+        error: {
+          statusCode: 404,
+          description: "User not found"
+        }
+      });
+    }
+
+    if (role !== "super_admin") {
+      return res.status(401).json({
+        success: false,
+        message: "You are not authorised to access this resource",
+        error: {
+          statusCode: 401,
+          description: "You are not authorised to access this resource"
+        }
+      });
+    }
+
+    let user = await UserSchema.findById(userID).select("-password").exec();
+    console.log(user);
+    return res.status(200).json({
+      success: true,
+      message: "Success",
+      data: {
+        statusCode: 200,
+        data: user
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+      error: {
+        statusCode: err.statusCode,
+        description: err.message
+      }
+    });
+  }
+};
