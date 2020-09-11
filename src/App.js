@@ -13,18 +13,26 @@ import PostIcon from "@material-ui/icons/Book";
 import UserIcon from "@material-ui/icons/Group";
 
 // Pages
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard";
+import Dashboard from "./views/reports/DashboardView";
+
 import { UserList } from "./pages/users";
 import { PostList, PostEdit, PostCreate } from "./pages/posts";
 
+// Component
+import MyLayout from "./components/MyLayout";
+
 // dataProvider
 // const dataProvider = jsonServerProvider("http://localhost:5000");
+
 const dataProvider = jsonServerProvider("https://jsonplaceholder.typicode.com");
 
 // Components
 
 const App = () => (
   <Admin
+    // dashboard={Dashboard}
+    layout={MyLayout}
     dashboard={Dashboard}
     dataProvider={dataProvider}
     authProvider={authProvider}

@@ -1,29 +1,68 @@
-# TeamAgile-032-GroupA
-A repository for both backend and Frontend project with their unique branchs seperate from the master branch. \n after the project has been completed, then both projectes will be merged with the Master Branch
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Year after year, there are alarming reports of families losing members to the indecent trades of humans by humans. where humans are indiscriminately trafficked to far distant farms and locations against their own will. 
+## Available Scripts
 
-My teams project is inspired by the trouble these events cause families every year and the bad reputation it gives to different countries as a result of the Human trafficking been perpetuated in their countries unknown to the Nationals, where we have designed a project that will actively track perpetrators and locations of this hidden trade.
+In the project directory, you can run:
 
-Our App allows anyone who had been a victim of human trafficking, regardless of their Location, Literacy Ability or Emergency Position to quickly reach out to the outside world and World Agencies regarding their currently situations by making quick videos or writing an article with possible information about the reported hidden that can easily be tracked to them.
+### `yarn start`
 
+Runs the app in the development mode.<br />
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
- ann-mukundi
-@singingcodes
-Sarah Ayanwale singingcodes Maintainer
-@a-bew
-a-bew Maintainer
-@danobaro
-danobaro Maintainer
-@gami34
-Gideon ifeanyi Mmeremnwanne gami34 Maintainer
-@ajibulu
-Yemisi Abolanle Ajibulu ajibulu Maintainer
-@michael7666
-Ebuka michael7666 Maintainer
-@dejetem
-JONATHAN SIMON dejetem Maintainer
-@Hack-Light
-Light Hack-Light Maintainer
-@Aztaro97
-TARO ABDOUL-AZIZ Aztaro97 Maintainer
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
+
+### `yarn test`
+
+Launches the test runner in the interactive watch mode.<br />
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `yarn build`
+
+Builds the app for production to the `build` folder.<br />
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.<br />
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `yarn eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+
+### Analyzing the Bundle Size
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+
+### Making a Progressive Web App
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+
+### Advanced Configuration
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+
+### Deployment
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+
+### `yarn build` fails to minify
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
