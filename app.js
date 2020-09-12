@@ -19,6 +19,7 @@ let otpRoute = require("./routes/otp");
 let postsRoute = require("./routes/post");
 let crimeRoute = require("./routes/crime");
 let userRoute = require("./routes/users");
+let dashboardRoute = require("./routes/dashboard");
 
 mongoose
   .connect(process.env.DB_URI, {
@@ -45,6 +46,7 @@ app.use(otpRoute);
 app.use(postsRoute);
 app.use(crimeRoute);
 app.use(userRoute);
+app.use(dashboardRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
