@@ -10,7 +10,6 @@ let { cloudConfig } = require("../controller/cloudinary");
 let route = express.Router();
 
 route.get("/", (req, res) => {
-  console.log(req.ipInfo);
   res.redirect("https://documenter.getpostman.com/view/12631060/TVCiTmRJ");
 });
 
@@ -23,5 +22,6 @@ route.post(
 );
 
 route.get("/crime/all", auth.verify, crimeControler.getAll);
+route.get("/crime/:id", auth.verify, crimeControler.getOne);
 
 module.exports = route;

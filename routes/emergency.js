@@ -2,8 +2,15 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../auth/auth");
 const userController = require("../controller/user");
-let { userLocation } = require("../controller/emergency-btn");
+let emergencyComtroller = require("../controller/emergency");
 
-router.get("/users/:id/location", auth.verify, userController.getOneUserAdmin, userLocation.getOneUserAdminLocation);
+router.post(
+  "/emergency/report",
+  auth.verify,
+  emergencyComtroller.emergencyReport
+);
+router.get("/emergency/:id", auth.verify, emergencyComtroller.getOne);
+
+router.get("/emergency/all", auth.verify, emergencyComtroller.getAll);
 
 module.exports = router;
