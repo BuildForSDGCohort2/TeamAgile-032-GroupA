@@ -3,6 +3,7 @@ const userSchema = require("../models/user");
 const DataUri = require("datauri/parser");
 const path = require("path");
 const cloudinary = require("cloudinary");
+const engagespotInstance = require("../controller/notification");
 
 exports.report = async (req, res, next) => {
   let user = req.user.phone_number;
@@ -36,6 +37,15 @@ exports.report = async (req, res, next) => {
         }
       });
     }
+    // get admin id to send notification
+    let admins = (await userSchema.find({ role: "super_admin" })).reduce(
+      (acc, curr) => {
+        return [...acc, curr._id];
+      },
+      []
+    );
+
+    console.log(admins);
 
     let crime_reporter = user._id;
 
@@ -72,7 +82,21 @@ exports.report = async (req, res, next) => {
       });
     }
 
-    await crimeSchema.create(crime);
+    let savedCrime = await crimeSchema.create(crime);
+
+    await engagespotInstance
+      .setMessage({
+        campaign_name: "Crime Notification",
+        notification: {
+          title: "ALERT! ALERT!! ALERT!!!",
+          message: "New Crime Report",
+          icon: "",
+          url: `${host}/crime/${savedCrime._id}`
+        },
+        send_to: "identifiers"
+      })
+      .addIdentifiers(admins)
+      .send();
 
     return res.status(201).json({
       success: true,
@@ -139,4 +163,44 @@ exports.getAll = async (req, res, next) => {
       }
     });
   }
+};
+
+exports.getOne = async (req, res, next) => {
+  let user = req.user.phone_number;
+
+  let id = req.params;
+
+  user = await userSchema.findOne({ phone: user });
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+      error: {
+        statusCode: 404,
+        description: "User not found"
+      }
+    });
+  }
+
+  if (user.role !== "super_admin") {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorised Access",
+      error: {
+        statusCode: 401,
+        description: "Unauthorised Access"
+      }
+    });
+  }
+
+  let crime = await crimeSchema.findById(id).populate("repoter", "phone");
+
+  return res.status(200).json({
+    success: true,
+    message: "success",
+    data: {
+      crime
+    }
+  });
 };
