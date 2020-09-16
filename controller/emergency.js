@@ -1,31 +1,81 @@
-const crimeSchema = require("../models/crime");
+const emergencySchema = require("../models/emergency");
 const userSchema = require("../models/user");
 const DataUri = require("datauri/parser");
 const path = require("path");
 const cloudinary = require("cloudinary");
-const engagespotInstance = require("../controller/notification");
+const unirest = require("unirest");
+const geocoder = require("../util/geocoder");
 
-exports.report = async (req, res, next) => {
-  let user = req.user.phone_number;
-  let crimeType = req.body.type;
-  let crimeTxt = req.body.text;
-  let address = req.body.address;
+exports.getOneUserAdminLocation = (req, res) => {
+  const apiCall = unirest(
+    "GET",
+    "https://ip-geolocation-ipwhois-io.p.rapidapi.com/json/"
+  );
+  apiCall.headers({
+    x_rapidapi_host: process.env.X_RAPIDAPI_HOST,
+    x_rapidapi_key: process.env.X_RAPIAPI_KEY,
+    useQueryString: true
+  });
+  apiCall.end(function (result) {
+    if (res.error) throw new Error(result.error);
+    console.log(result.body);
+    res.send(result.body);
+  });
+};
+
+exports.update = async (req, res) => {
   let dtUri = new DataUri();
-
   try {
-    console.log(req.ipInfo);
-    if (!crimeTxt && !crimeType) {
+    if (!req.files || req.files.length <= 0) {
       return res.status(404).json({
         success: false,
-        message: "Fill the required fields",
+        message: "Provide evidence of crime",
         error: {
           statusCode: 400,
-          description: "Fill the required fields"
+          description: "Provide evidence of crime"
         }
       });
     }
+    let crime = {
+      type:String
+    };
+  
+    crime.evidence = [];
+  
+    for (const file of req.files) {
+      let dataUri = dtUri.format(path.extname(file.originalname), file.buffer);
+  
+      let final_file = dataUri.content;
+  
+      let media = await cloudinary.v2.uploader.upload_large(final_file);
+  
+      crime.evidence.push({
+        url: media.secure_url,
+        public_id: media.public_id
+      });
+    }
+    let savedCrime = await emergencySchema.create(crime);
+    setCrime(savedCrime.data)
+  }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+      error: {
+        statusCode: 500,
+        description: err
+      }
+    });
+  }
+};
 
+exports.emergencyReport = async (req, res, next) => {
+  let user = req.user.phone_number;
+  let { latitude, longitude } = req.body;
+
+  try {
     user = await userSchema.findOne({ phone: user });
+
+    /*  const URL = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}location_type=ROOFTOP&result_type=street_address&key=${process.env.GEOCODER_API}` */
 
     if (!user) {
       return res.status(404).json({
@@ -37,66 +87,27 @@ exports.report = async (req, res, next) => {
         }
       });
     }
-    // get admin id to send notification
-    let admins = (await userSchema.find({ role: "super_admin" })).reduce(
-      (acc, curr) => {
-        return [...acc, curr._id];
-      },
-      []
-    );
 
-    console.log(admins);
+    let loc = await geocoder.reverse({
+      lat: latitude,
+      lon: longitude
+    });
+    console.log(geocodedResult);
+    let emergency_reporter = user._id;
 
-    let crime_reporter = user._id;
-
-    let crime = {
-      text: crimeTxt,
-      crimeType: crimeType,
-      reporter: crime_reporter,
-      address: address
+    let emergency = {
+      reporter: emergency_reporter,
+      location: {
+        type: "Point",
+        coordinates: [longitude, latitude],
+        formattedAddress: loc[0].formattedAddress,
+        country: loc[0].country,
+        city: loc[0].city,
+        street: loc[0].streetName
+      }
     };
 
-    if (!req.files || req.files.length <= 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Provide evidence of crime",
-        error: {
-          statusCode: 400,
-          description: "Provide evidence of crime"
-        }
-      });
-    }
-
-    crime.evidence = [];
-
-    for (const file of req.files) {
-      let dataUri = dtUri.format(path.extname(file.originalname), file.buffer);
-
-      let final_file = dataUri.content;
-
-      let media = await cloudinary.v2.uploader.upload_large(final_file);
-
-      crime.evidence.push({
-        url: media.secure_url,
-        public_id: media.public_id
-      });
-    }
-
-    let savedCrime = await crimeSchema.create(crime);
-
-    await engagespotInstance
-      .setMessage({
-        campaign_name: "Crime Notification",
-        notification: {
-          title: "ALERT! ALERT!! ALERT!!!",
-          message: "New Crime Report",
-          icon: "",
-          url: `${host}/crime/${savedCrime._id}`
-        },
-        send_to: "identifiers"
-      })
-      .addIdentifiers(admins)
-      .send();
+    await emergencySchema.create(emergency);
 
     return res.status(201).json({
       success: true,
@@ -194,13 +205,15 @@ exports.getOne = async (req, res, next) => {
     });
   }
 
-  let crime = await crimeSchema.findById(id).populate("repoter", "phone");
+  let emergency = await emergencySchema
+    .findById(id)
+    .populate("repoter", "phone");
 
   return res.status(200).json({
     success: true,
     message: "success",
     data: {
-      crime
+      emergency
     }
   });
 };

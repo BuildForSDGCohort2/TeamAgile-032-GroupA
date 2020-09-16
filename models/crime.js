@@ -58,7 +58,6 @@ const crimeSchema = new mongoose.Schema(
 
 crimeSchema.pre("save", async function (next) {
   let loc = await geocoder.geocode(this.address);
-  console.log(loc);
 
   this.location = {
     type: "Point",

@@ -2,24 +2,28 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const createError = require("http-errors");
-const express = require("express");
-const path = require("path");
+// import required modules
+const createError = require("http-errors"),
+  express = require("express"),
+  path = require("path"),
+  cors = require("cors"),
+  expressip = require("express-ip"),
+  app = express(),
+  mongoose = require("mongoose"),
+  port = process.env.PORT || 3000,
+  socket = require("socket.io");
 
-const expressip = require("express-ip");
-const app = express();
+// import routes
+let registerRoute = require("./routes/register"),
+  loginRoute = require("./routes/login"),
+  otpRoute = require("./routes/otp"),
+  postsRoute = require("./routes/post"),
+  crimeRoute = require("./routes/crime"),
+  userRoute = require("./routes/users"),
+  dashboardRoute = require("./routes/dashboard"),
+  emergencyRoute = require("./routes/emergency");
 
-let port = process.env.PORT || 3000;
-
-const mongoose = require("mongoose");
-
-let registerRoute = require("./routes/register");
-let loginRoute = require("./routes/login");
-let otpRoute = require("./routes/otp");
-let postsRoute = require("./routes/post");
-let crimeRoute = require("./routes/crime");
-let userRoute = require("./routes/users");
-
+// connect to database
 mongoose
   .connect(process.env.DB_URI, {
     useNewUrlParser: true,
@@ -31,20 +35,24 @@ mongoose
   })
   .catch(err => console.log(err));
 
+// register required modules
 app.enable("trust proxy");
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(expressip().getIpInfoMiddleware);
 
-app.use(express.static(path.join(__dirname, "assets")));
+// app.use(express.static(path.join(__dirname, "assets")));
 
+// register routes
 app.use(registerRoute);
 app.use(loginRoute);
 app.use(otpRoute);
 app.use(postsRoute);
 app.use(crimeRoute);
 app.use(userRoute);
+app.use(dashboardRoute);
+app.use(emergencyRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -61,6 +69,7 @@ app.use(function (err, req, res, next) {
   console.log(err);
 });
 
+// listen to the server
 app.listen(port, () => {
   console.log(`App listening on port port`);
 });
