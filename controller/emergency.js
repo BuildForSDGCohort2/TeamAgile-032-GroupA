@@ -55,7 +55,27 @@ exports.update = async (req, res) => {
       });
     }
     let savedCrime = await emergencySchema.create(crime);
-    setCrime(savedCrime.data)
+    await engagespotInstance
+      .setMessage({
+        campaign_name: "Crime Notification",
+        notification: {
+          title: "ALERT! ALERT!! ALERT!!!",
+          message: "New Crime Report",
+          icon: "",
+          url: `${host}/crime/${savedCrime._id}`
+        },
+        send_to: "identifiers"
+      })
+      .addIdentifiers(admins)
+      .send();
+
+    return res.status(201).json({
+      success: true,
+      message: "Crime evidence submitted successfully.",
+      data: {
+        statusCode: 200
+      }
+    });
   }catch (err) {
     return res.status(500).json({
       success: false,
