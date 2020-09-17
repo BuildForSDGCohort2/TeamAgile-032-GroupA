@@ -25,65 +25,29 @@ exports.getOneUserAdminLocation = (req, res) => {
 
 exports.update = async (req, res) => {
   let dtUri = new DataUri();
-  try {
-    if (!req.files || req.files.length <= 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Provide evidence of crime",
-        error: {
-          statusCode: 400,
-          description: "Provide evidence of crime"
-        }
-      });
-    }
-    let crime = {
-      type:String
-    };
-  
-    crime.evidence = [];
-  
-    for (const file of req.files) {
-      let dataUri = dtUri.format(path.extname(file.originalname), file.buffer);
-  
-      let final_file = dataUri.content;
-  
-      let media = await cloudinary.v2.uploader.upload_large(final_file);
-  
-      crime.evidence.push({
-        url: media.secure_url,
-        public_id: media.public_id
-      });
-    }
-    let savedCrime = await emergencySchema.create(crime);
-    await engagespotInstance
-      .setMessage({
-        campaign_name: "Crime Notification",
-        notification: {
-          title: "ALERT! ALERT!! ALERT!!!",
-          message: "New Crime Report",
-          icon: "",
-          url: `${host}/crime/${savedCrime._id}`
-        },
-        send_to: "identifiers"
-      })
-      .addIdentifiers(admins)
-      .send();
-
-    return res.status(201).json({
-      success: true,
-      message: "Crime evidence submitted successfully.",
-      data: {
-        statusCode: 200
+  if (!req.files || req.files.length <= 0) {
+    return res.status(404).json({
+      success: false,
+      message: "Provide evidence of crime",
+      error: {
+        statusCode: 400,
+        description: "Provide evidence of crime"
       }
     });
-  }catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-      error: {
-        statusCode: 500,
-        description: err
-      }
+  }
+
+  crime.evidence = [];
+
+  for (const file of req.files) {
+    let dataUri = dtUri.format(path.extname(file.originalname), file.buffer);
+
+    let final_file = dataUri.content;
+
+    let media = await cloudinary.v2.uploader.upload_large(final_file);
+
+    crime.evidence.push({
+      url: media.secure_url,
+      public_id: media.public_id
     });
   }
 };
