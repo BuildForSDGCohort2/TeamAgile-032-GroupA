@@ -20,7 +20,7 @@ Step 3: cd into the cloned folded | <code>cd TeamAgile-032-GroupA</code>
 
 Step 4: git remote add upstream https://github.com/BuildForSDGCohort2/TeamAgile-032-GroupA.git
 
-Step 5: git pull upstream develop
+Step 5: git pull upstream mobile
 
 Step 6: Check out to the task branch | <code>git checkout -b <NAME_OF_THE_TASK></code>
 
@@ -30,13 +30,10 @@ Running the project locally
 
 Step 1: npm install
 
-Step 2: Copy env.example to .env
+Step 2: npm start or expo start
 
-Step 3: npm run start
+Step 3: Connect to andriod device or emulator 
 
-Step 4: Go to http://localhost:3000
-
-A welcome message will come up with status code 200
 
 #### Creating a pull request
 
@@ -48,7 +45,7 @@ Step 1: Run: git add .
 
 Step 2: Run: git commit -m "< COMMIT MESSAGE >"
 
-Step 3: git pull upstream develop
+Step 3: git pull upstream mobile 
 
 Step 4: git push origin < BRANCH_NAME >
 
